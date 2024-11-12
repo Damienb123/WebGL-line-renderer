@@ -10,6 +10,6 @@ A simple, interactive WebGL application that allows users to render a customizab
 
 ## Demo
 
-[Hosted URL for the Demo on Vercel](web-gl-line-renderer.vercel.app)
+[Hosted URL for the Demo on Vercel](https://web-gl-line-renderer.vercel.app/)
 
 
