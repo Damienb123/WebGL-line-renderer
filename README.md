@@ -12,4 +12,5 @@ A simple, interactive WebGL application that allows users to render a customizab
 
 [Hosted URL for the Demo (e.g., on GitHub Pages, Netlify, or Vercel)](your-demo-url-here)
 
+<img src="webglprojectimage.png" width=200>
 
