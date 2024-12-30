@@ -12,4 +12,9 @@ A simple, interactive WebGL application that allows users to render a customizab
 
 [Hosted URL for the Demo on Vercel](https://web-gl-line-renderer.vercel.app/)
 
-
+## What's Next
+- Will be using Next.js for a more cleaner and structured approach to the project
+  - Goal
+    - Use Firebase for data management (line creation **add/delete**)
+    - integrate app routing
+    - Bezier and spline curves     
