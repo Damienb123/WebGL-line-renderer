@@ -99,6 +99,15 @@ document.getElementById('lineColor').addEventListener('input', (event) => {
     drawLine();
 });
 
+// Clear the line using a popping method
+document.getElementById('undoLine').addEventListener('click', () => {
+  if(lineVertices.length > 0) { // allows removal of all lines created by the user | increased value means last few lines will remain
+    lineVertices.pop();
+    lineVertices.pop();
+    drawLine();
+  }
+});
+
 // Add point on canvas click
 canvas.addEventListener('click', (event) => {
     let rect = canvas.getBoundingClientRect();
