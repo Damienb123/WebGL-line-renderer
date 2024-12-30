@@ -13,8 +13,9 @@ let vertexShaderSource = `
 
 let fragmentShaderSource = `
     precision mediump float;
+    uniform vec4 u_color;
     void main() {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);  // Black line color
+        gl_FragColor = u_color;  // allow the assortment of colors to chose from for the created line
     }
 `;
 
@@ -84,6 +85,17 @@ document.getElementById('addPoint').addEventListener('click', () => {
     let x = (Math.random() * 2) - 1;  // Random X in normalized device coordinates
     let y = (Math.random() * 2) - 1;  // Random Y in normalized device coordinates
     lineVertices.push(x, y);
+    drawLine();
+});
+
+// Change color of line
+let colorLocation = gl.getUniformLocation(program, "u_color");
+document.getElementById('lineColor').addEventListener('input', (event) => {
+    let color = event.target.value;
+    let r = parseInt(color.slice(1, 3), 16) / 255;
+    let g = parseInt(color.slice(3, 5), 16) / 255;
+    let b = parseInt(color.slice(5, 7), 16) / 255;
+    gl.uniform4f(colorLocation, r, g, b, 1.0);
     drawLine();
 });
 
