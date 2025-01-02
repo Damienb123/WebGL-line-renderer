@@ -55,6 +55,16 @@ let lineBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, lineBuffer);
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineVertices), gl.DYNAMIC_DRAW);
 
+// lineVertices is already initialized to store line vertices
+// Initialize linedeque for efficient undo/redo operations
+let linedeque = [];
+
+linedeque.push(lineVertices);
+
+if (linedeque.length > 0) {
+  linedeque.pop();
+}
+
 // Set up WebGL to draw
 gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 gl.clearColor(1.0, 1.0, 1.0, 1.0); // White background
@@ -87,6 +97,11 @@ document.getElementById('addPoint').addEventListener('click', () => {
     lineVertices.push(x, y);
     drawLine();
 });
+
+// interpolate between start and end points for smooth connecting lines
+function lerp(start , end, t) {
+    return start + (end - start) * t;
+}
 
 // Change color of line
 let colorLocation = gl.getUniformLocation(program, "u_color");
