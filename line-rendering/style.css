@@ -10,7 +10,7 @@ body {
 /* Parent container to hold .container and the right column */
 .parent-container {
     display: flex;
-    justify-content: flex-start; /* Align items to the left */
+    justify-content: center; /* Align items to the center */
     align-items: flex-start; /* Align items to the top */
     gap: 20px; /* Add space between the left and right sections */
     margin-top: 25px;
