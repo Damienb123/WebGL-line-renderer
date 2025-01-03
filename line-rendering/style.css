@@ -33,15 +33,17 @@ body {
 /* Right column container for management and curve sections */
 .right-column {
     display: flex;
+    justify-content: center;
     flex-direction: column; /* Stack items vertically */
-    gap: 20px; /* Add space between .management-container and .curve-container */
+    gap: 30px; /* Add space between .management-container and .curve-container */
 }
 
 /* Management and curve containers */
 .management-container,
+.image-container,
 .curve-container {
     max-width: 700px;
-    padding: 20px;
+    padding: 28px;
     text-align: center;
     align-items: center;
     flex-wrap: wrap;
@@ -166,6 +168,9 @@ canvas {
 
     /* Make responsive for larger screens */
     @media (max-width: 1200px) {
+        .management-container,
+        .image-container,
+        .curve-container,
         .container {
             max-width: 500px;
         }
