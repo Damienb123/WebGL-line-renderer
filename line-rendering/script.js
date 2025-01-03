@@ -15,7 +15,7 @@ let fragmentShaderSource = `
     precision mediump float;
     uniform vec4 u_color;
     void main() {
-        gl_FragColor = u_color;  // allow the assortment of colors to chose from for the created line
+        gl_FragColor = u_color;
     }
 `;
 
@@ -48,6 +48,7 @@ gl.useProgram(program);
 // Get attribute and uniform locations
 let positionLocation = gl.getAttribLocation(program, "a_position");
 let pointSizeLocation = gl.getUniformLocation(program, "u_pointSize");
+let colorLocation = gl.getUniformLocation(program, "u_color");
 
 // Initialize buffer to store line vertices
 let lineVertices = [];
@@ -55,56 +56,71 @@ let lineBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, lineBuffer);
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineVertices), gl.DYNAMIC_DRAW);
 
-// lineVertices is already initialized to store line vertices
-// Initialize linedeque for efficient undo/redo operations
-let linedeque = [];
-
-linedeque.push(lineVertices);
-
-if (linedeque.length > 0) {
-  linedeque.pop();
-}
-
-// Set up WebGL to draw
+// Viewport and clear settings
 gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-gl.clearColor(1.0, 1.0, 1.0, 1.0); // White background
+gl.clearColor(1.0, 1.0, 1.0, 1.0);
 gl.clear(gl.COLOR_BUFFER_BIT);
+
+// Smooth mode toggle
+let smoothMode = false;
+document.getElementById('toggleSmooth').addEventListener('click', () => {
+    smoothMode = !smoothMode;
+    drawLine();
+});
 
 // Draw function
 function drawLine() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    // Set line width from user input
+    let verticesToDraw = smoothMode ? calculateBezier(lineVertices) : lineVertices;
+
     let lineWidth = document.getElementById('lineWidth').value;
     gl.uniform1f(pointSizeLocation, lineWidth);
 
-    // Bind and update buffer
     gl.bindBuffer(gl.ARRAY_BUFFER, lineBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineVertices), gl.DYNAMIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verticesToDraw), gl.DYNAMIC_DRAW);
 
-    // Enable position attribute
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-    // Draw the line
-    gl.drawArrays(gl.LINE_STRIP, 0, lineVertices.length / 2);
+    gl.drawArrays(gl.LINE_STRIP, 0, verticesToDraw.length / 2);
 }
 
-// Add a random point to the line
-document.getElementById('addPoint').addEventListener('click', () => {
-    let x = (Math.random() * 2) - 1;  // Random X in normalized device coordinates
-    let y = (Math.random() * 2) - 1;  // Random Y in normalized device coordinates
+// Bézier interpolation
+function calculateBezier(vertices) {
+    if (vertices.length < 4) return vertices;
+    let smoothedVertices = [];
+    for (let i = 0; i < vertices.length - 2; i += 2) {
+        let x1 = vertices[i];
+        let y1 = vertices[i + 1];
+        let x2 = vertices[i + 2];
+        let y2 = vertices[i + 3];
+
+        for (let t = 0; t <= 1; t += 0.1) {
+            let x = lerp(x1, x2, t);
+            let y = lerp(y1, y2, t);
+            smoothedVertices.push(x, y);
+        }
+    }
+    smoothedVertices.push(vertices[vertices.length - 2], vertices[vertices.length - 1]);
+    return smoothedVertices;
+}
+
+// Linear interpolation
+function lerp(start, end, t) {
+    return start + (end - start) * t;
+}
+
+// Add point
+canvas.addEventListener('click', (event) => {
+    let rect = canvas.getBoundingClientRect();
+    let x = ((event.clientX - rect.left) / canvas.width) * 2 - 1;
+    let y = ((rect.height - (event.clientY - rect.top)) / canvas.height) * 2 - 1;
     lineVertices.push(x, y);
     drawLine();
 });
 
-// interpolate between start and end points for smooth connecting lines
-function lerp(start , end, t) {
-    return start + (end - start) * t;
-}
-
-// Change color of line
-let colorLocation = gl.getUniformLocation(program, "u_color");
+// Change line color
 document.getElementById('lineColor').addEventListener('input', (event) => {
     let color = event.target.value;
     let r = parseInt(color.slice(1, 3), 16) / 255;
@@ -114,20 +130,40 @@ document.getElementById('lineColor').addEventListener('input', (event) => {
     drawLine();
 });
 
-// Clear the line using a popping method
+// Undo last point
 document.getElementById('undoLine').addEventListener('click', () => {
-  if(lineVertices.length > 0) { // allows removal of all lines created by the user | increased value means last few lines will remain
-    lineVertices.pop();
-    lineVertices.pop();
-    drawLine();
-  }
+    if (lineVertices.length > 0) {
+        lineVertices.pop();
+        lineVertices.pop();
+        drawLine();
+    }
 });
 
-// Add point on canvas click
-canvas.addEventListener('click', (event) => {
-    let rect = canvas.getBoundingClientRect();
-    let x = ((event.clientX - rect.left) / canvas.width) * 2 - 1;
-    let y = ((rect.height - (event.clientY - rect.top)) / canvas.height) * 2 - 1;
-    lineVertices.push(x, y);
-    drawLine();
+// Save line to file
+document.getElementById('saveLine').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(lineVertices)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'line.json';
+    a.click();
+    URL.revokeObjectURL(url);
 });
+
+// Load line from file
+document.getElementById('loadLineButton').addEventListener('click', () => {
+    document.getElementById('loadLine').click();
+});
+
+document.getElementById('loadLine').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            lineVertices = JSON.parse(e.target.result);
+            drawLine();
+        };
+        reader.readAsText(file);
+    }
+});
+

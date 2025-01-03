@@ -7,11 +7,18 @@ body {
     padding: 0;
 }
 
-/* Center the main content */
+/* Parent container to hold .container and the right column */
+.parent-container {
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+    align-items: flex-start; /* Align items to the top */
+    gap: 20px; /* Add space between the left and right sections */
+    margin-top: 25px;
+}
+
+/* Left container */
 .container {
     max-width: 700px;
-    margin: 0 auto;
-    margin-top: 25px;
     padding: 20px;
     text-align: center;
     align-items: center;
@@ -22,6 +29,30 @@ body {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);    
     color: #e0e0e0;
 }
+
+/* Right column container for management and curve sections */
+.right-column {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    gap: 20px; /* Add space between .management-container and .curve-container */
+}
+
+/* Management and curve containers */
+.management-container,
+.curve-container {
+    max-width: 700px;
+    padding: 20px;
+    text-align: center;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: #1e1e1e; /* Dark card background */
+    border-radius: 35px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);    
+    color: #e0e0e0;
+}
+
+
 
 .app-instructions {
     font-size: 16px;

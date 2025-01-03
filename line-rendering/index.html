@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <div class="parent-container">
     <div class="container">
         <h1 id="title">WebGL Line Renderer</h1>
         <p class="instructions">Click on the canvas to add points, or use the "Generate New Segment" button to generate a line segment.</p>
@@ -25,6 +26,26 @@
         <button id="undoLine"> Undo Created Line</button>
     </div>
 
+    <div class="right-column">
+    <div class="management-container">
+        <h2 id="title-2">Line Management</h2>
+        <p class="line-instructions">Select whether you'd like to save your generated lines or save whats created.</p>
+
+        <button id="saveLine">Save Line</button>
+        <input type="file" id="loadLine" style="display: none;">
+        <button id="loadLineButton">Load Line</button>
+
+        </div>
+
+        <div class="curve-container">
+            <h2 id="title-3">Curves</h2>
+            <p class="curve-instructions">Adjust your lines to view smooth curves.</p>
+            <button id="toggleSmooth">Toggle Smooth Curves</button>
+        </div>
+    </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
+
