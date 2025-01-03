@@ -167,3 +167,13 @@ document.getElementById('loadLine').addEventListener('change', (event) => {
     }
 });
 
+// Export image function
+document.getElementById('exportImage').addEventListener('click', () => {
+  let dataURL = canvas.toDataURL('image/png');
+  let a = document.createElement('a');
+  a.href = dataURL;
+  a.download = 'line_renderer.png';
+  a.click();
+});
+
+
