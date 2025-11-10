@@ -174,6 +174,7 @@ document.getElementById('exportImage').addEventListener('click', () => {
   a.href = dataURL;
   a.download = 'line_renderer.png';
   a.click();
+  exportImage();
 });
 
 
