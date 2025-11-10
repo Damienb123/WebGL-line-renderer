@@ -1,5 +1,5 @@
 let canvas = document.getElementById('glCanvas');
-let gl = canvas.getContext('webgl');
+let gl = canvas.getContext('webgl', {preserveDrawingBuffer: true });
 
 // Initialize shaders
 let vertexShaderSource = `
@@ -174,7 +174,6 @@ document.getElementById('exportImage').addEventListener('click', () => {
   a.href = dataURL;
   a.download = 'line_renderer.png';
   a.click();
-  exportImage();
 });
 
 
